@@ -1,39 +1,87 @@
 <template>
   <v-container>
-    <v-layout row="" justify-center="" style="position: relative;">
-      <v-date-picker v-model="date"></v-date-picker>
+      <v-layout row justify-center style="position: relative;">
+          <v-date-picker v-model="item.date"></v-date-picker>
+          <v-btn
+            fab
+            absolute
+            right
+            class="mt-4"
+            success
+            dark
+            @click.native.stop="saveItem()"
+          >
+          <v-icon>save</v-icon>
+        </v-btn>
+      </v-layout>
+    <v-layout row="" justify-center="" style="position: relative;" >
+      <v-btn primary="" @click.native.stop="dialogStart = true">Start: {{ item.start }}</v-btn>
+      <v-btn primary="" @click.native.stop="dialogEnd = true">End: {{ item.end }}</v-btn>
     </v-layout>
-    <v-layout row="" justify-center="" style="position: relative;">
-      <v-btn primary="" @click.native.stop="dialogStart = true">Start: {{ startDate }}</v-btn>
-      <v-btn primary="" @click.native.stop="dialogEnd = true">End: {{ endDate }}</v-btn>
-      <v-dialog v-model="dialogStart">
-        <v-time-picker v-model="startDate"></v-time-picker>
-        <v-spacer></v-spacer>
-        <v-btn class="white--text" flat="flat" @click.native="dialogStart = false">Save</v-btn>
-      </v-dialog>
-      <v-dialog v-model="dialogEnd">
-        <v-time-picker v-model="endDate"></v-time-picker>
-        <v-spacer></v-spacer>
-        <v-btn class="white--text" flat="flat" @click.native="dialogEnd = false">Save</v-btn>
-      </v-dialog>
-    </v-layout>
+    <v-dialog v-model="dialogStart">
+      <v-flex row>
+        <v-time-picker v-model="item.start"></v-time-picker>
+      </v-flex>
+      <v-flex row class="primary text-xs-right">
+        <v-btn @click.native="dialogStart = false">
+          <v-icon left>check</v-icon>
+          OK
+        </v-btn>
+      </v-flex>
+    </v-dialog>
+        <v-dialog v-model="dialogEnd">
+      <v-flex row>
+        <v-time-picker v-model="item.end"></v-time-picker>
+      </v-flex>
+      <v-flex row class="primary text-xs-right">
+        <v-btn @click.native="dialogEnd = false">
+          <v-icon left>check</v-icon>
+          OK
+        </v-btn>
+      </v-flex>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
+  import { WorkDays } from '../api'
+
   export default {
+    props: ['id'],
     data () {
       return {
-        date: null,
-        startDate: null,
-        endDate: null,
+        workdays: null,
         dialogStart: false,
-        dialogEnd: false
+        dialogEnd: false,
+        item: {
+          date: new Date(),
+          start: new Date().getHours() + ':' + new Date().getMinutes(),
+          end: (new Date().getHours() + 1) + ':' + new Date().getMinutes()
+        }
       }
     },
     mounted () {
-      this.start = `${new Date().getHours()}:${new Date().getMinutes()}`
-      this.end = `${new Date().getHours()}:${new Date().getMinutes()}`
+      this.workdays = new WorkDays(this.$localStorage)
+      const item = this.workdays.getById(this.id)
+      if (item) {
+        this.item = {
+          id: this.id,
+          date: item.date,
+          start: item.start,
+          end: item.end
+        }
+      }
+    },
+    methods: {
+      saveItem () {
+        this.workdays.save({
+          id: this.id,
+          date: this.item.date,
+          start: this.item.start,
+          end: this.item.end
+        })
+        this.$router.push('/')
+      }
     }
   }
 </script>

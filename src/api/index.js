@@ -8,12 +8,20 @@ export class WorkDays {
     this.storage = storage
   }
   getAll () {
-    return this.storage.get(WORK_DAYS_ITEMS)
+    return JSON.parse(this.storage.get(WORK_DAYS_ITEMS)) || []
+  }
+  getIncomexHour () {
+    const settings = JSON.parse(this.storage.get(SETTINGS)) || {hourlyIncome: 0}
+    return settings.hourlyIncome
+  }
+  getIncomexMinute () {
+    const settings = JSON.parse(this.storage.get(SETTINGS)) || {hourlyIncome: 0}
+    return settings.hourlyIncome / 60
   }
   totalHours () {
     let hours = 0
     let minutes = 0
-    this.storage.get(WORK_DAYS_ITEMS).map((s) => {
+    this.getAll().map((s) => {
       const item = s.hours.split(':')
       hours += parseInt(item[0], 10)
       minutes += parseInt(item[1], 10)
@@ -24,16 +32,20 @@ export class WorkDays {
     }
     return `${('00' + hours).slice(-2)}:${('00' + minutes).slice(-2)}`
   }
+  totalIncome () {
+    return this.income(this.totalHours())
+  }
   income (time) {
     if (!time) {
       return 0
     }
-    const rate = this.storage.get(SETTINGS).hourlyIncome
+    const settings = JSON.parse(this.storage.get(SETTINGS)) || {hourlyIncome: 0}
     const hours = time.split(':')
-    return ((rate / 60) * parseInt(hours[1])) + (rate * parseInt(hours[0], 10))
+    return ((settings.hourlyIncome / 60) * parseInt(hours[1])) +
+            (settings.hourlyIncome * parseInt(hours[0], 10))
   }
   setIncome (rate) {
-    this.storage.set(SETTINGS, {hourlyIncome: rate})
+    this.storage.set(SETTINGS, JSON.stringify({hourlyIncome: rate}))
   }
   getById (id) {
     const workdayItems = this.getAll()
@@ -56,10 +68,11 @@ export class WorkDays {
     const duration = moment.duration(endTime.diff(startTime))
     const hours = parseInt(duration.asHours())
     const minutes = parseInt(duration.asMinutes()) - hours * 60
+    const lapse = `${hours}:${minutes}`
     const newItem = Object.assign({}, item, {
       id: item.id || uuidV4(),
-      hours: `${hours}:${minutes}`,
-      timestamp: Date.now()
+      hours: lapse,
+      income: this.getIncomexHour(lapse)
     })
     const itemIndex = workdayItems.findIndex(s => s.id === item.id)
     if (itemIndex >= 0) {
@@ -67,14 +80,14 @@ export class WorkDays {
     } else {
       workdayItems.push(newItem)
     }
-    this.storage.set(WORK_DAYS_ITEMS, workdayItems)
+    this.storage.set(WORK_DAYS_ITEMS, JSON.stringify(workdayItems))
   }
   delete (id) {
     const workdayItems = this.getAll()
     const itemIndex = workdayItems.findIndex(item => item.id === id)
     if (itemIndex >= 0) {
       workdayItems.splice(itemIndex, 1)
-      this.storage.set(WORK_DAYS_ITEMS, workdayItems)
+      this.storage.set(WORK_DAYS_ITEMS, JSON.stringify(workdayItems))
     }
   }
 }

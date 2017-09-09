@@ -1,14 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import moment from 'vue-moment'
-import VueLocalStorage from 'vue-localstorage'
 import Edit from '@/components/Edit'
 import List from '@/components/List'
 import View from '@/components/View'
 
 Vue.use(Router)
-Vue.use(moment)
-Vue.use(VueLocalStorage)
 
 export default new Router({
   routes: [
@@ -18,7 +14,7 @@ export default new Router({
       component: List
     },
     {
-      path: '/view',
+      path: '/view:id',
       name: 'View',
       component: View,
       props: true
