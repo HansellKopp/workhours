@@ -10,42 +10,30 @@ export class WorkDays {
   getAll () {
     return JSON.parse(this.storage.get(WORK_DAYS_ITEMS)) || []
   }
-  getIncomexHour () {
-    const settings = JSON.parse(this.storage.get(SETTINGS)) || {hourlyIncome: 0}
+  setHourlyIncome (rate) {
+    this.storage.set(SETTINGS, JSON.stringify({hourlyIncome: rate}))
+  }
+  getHourlyIncome () {
+    const settings = JSON.parse(this.storage.get(SETTINGS)) || {hourlyIncome: 8.84}
     return settings.hourlyIncome
   }
-  getIncomexMinute () {
-    const settings = JSON.parse(this.storage.get(SETTINGS)) || {hourlyIncome: 0}
+  getIncomeMinute () {
+    const settings = JSON.parse(this.storage.get(SETTINGS)) || {hourlyIncome: 8.84}
     return settings.hourlyIncome / 60
   }
-  totalHours () {
-    let hours = 0
-    let minutes = 0
-    this.getAll().map((s) => {
-      const item = s.hours.split(':')
-      hours += parseInt(item[0], 10)
-      minutes += parseInt(item[1], 10)
+  totalHours (data) {
+    let total = 0
+    data.map((s) => {
+      total += moment.duration(s.end.diff(s.start))
     })
-    if (minutes > 59) {
-      hours += Math.floor(minutes / 60)
-      minutes = minutes % 60
-    }
-    return `${('00' + hours).slice(-2)}:${('00' + minutes).slice(-2)}`
+    return moment.duration(total).humanize
   }
-  totalIncome () {
-    return this.income(this.totalHours())
-  }
-  income (time) {
-    if (!time) {
-      return 0
-    }
-    const settings = JSON.parse(this.storage.get(SETTINGS)) || {hourlyIncome: 0}
-    const hours = time.split(':')
-    return ((settings.hourlyIncome / 60) * parseInt(hours[1])) +
-            (settings.hourlyIncome * parseInt(hours[0], 10))
-  }
-  setIncome (rate) {
-    this.storage.set(SETTINGS, JSON.stringify({hourlyIncome: rate}))
+  totalIncome (data) {
+    let total = 0
+    data.map((s) => {
+      total += s.income
+    })
+    return total
   }
   getById (id) {
     const workdayItems = this.getAll()
@@ -58,22 +46,33 @@ export class WorkDays {
       return null
     }
   }
+  setDateTime (_date, _time) {
+    let date = moment(_date)
+    let time = moment(_time, 'HH:mm a')
+    date.set({
+      hour: time.get('hour'),
+      minute: time.get('minute')
+    })
+    return date
+  }
   save (item) {
     const workdayItems = this.getAll()
-    const startTime = moment(item.start, 'HH:mm')
-    const endTime = moment(item.end, 'HH:mm')
-    if (endTime < startTime) {
-      endTime.add(1, 'day')
+    const start = this.setDateTime(item.date, item.start)
+    const end = this.setDateTime(item.date, item.end)
+    if (end < start) {
+      end.add(1, 'day')
     }
-    const duration = moment.duration(endTime.diff(startTime))
-    const hours = parseInt(duration.asHours())
-    const minutes = parseInt(duration.asMinutes()) - hours * 60
-    const lapse = `${hours}:${minutes}`
-    const newItem = Object.assign({}, item, {
+    const minutes = Math.trunc(moment.duration(end.diff(start)).asMinutes())
+    const hours = Math.trunc(minutes / 60)
+    const lapse = `${hours}:${minutes - (hours * 60)}`
+    const income = this.getIncomeMinute() * minutes
+    const newItem = {
       id: item.id || uuidV4(),
-      hours: lapse,
-      income: this.getIncomexHour(lapse)
-    })
+      start,
+      end,
+      lapse,
+      income
+    }
     const itemIndex = workdayItems.findIndex(s => s.id === item.id)
     if (itemIndex >= 0) {
       workdayItems[itemIndex] = newItem

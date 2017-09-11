@@ -4,12 +4,12 @@
             <div>{{ item.date | moment("dddd, MMMM Do YYYY") }}</div>
         </v-card-title>
         <v-card-text>
-            <p>Start: {{ item.start }}</p>
-            <p>End: {{ item.end }}</p>
+            <p>Start: {{ item.start | moment("HH:mm a") }}</p>
+            <p>End: {{ item.end |  moment("HH:mm a") }}</p>
             <v-divider></v-divider>
-            <p>Hours: {{ item.hours }}</p>
+            <p>Hours: {{ item.lapse }}</p>
             <v-divider></v-divider>
-            <p>Income: {{ item.income }}</p>
+            <p>Income: {{ item.income.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) }}</p>
         </v-card-text>
         <v-card-actions>
             <v-spacer></v-spacer>
@@ -32,14 +32,13 @@ export default {
   props: ['id'],
   data () {
     return {
-      item: {date: new Date(), start: null, end: null},
+      item: {date: new Date(), start: new Date(), end: new Date(), income: 0},
       workdays: null
     }
   },
   methods: {
     load () {
       this.item = this.workdays.getById(this.id)
-      this.income = this.workdays.income(this.item.hours)
       if (!this.item) {
         this.$router.push('/')
       }

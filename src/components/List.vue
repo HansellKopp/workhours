@@ -28,11 +28,11 @@
               </v-list-tile-avatar>
               <v-list-tile-content>
                 <v-list-tile-title> 
-                  <span>{{ item.start }} - {{ item.end }}</span>   
-                  ({{ item.hours }})
+                  <span>{{ item.start | moment("HH:mm a") }} - {{ item.end | moment("HH:mm a") }}</span>   
+                  ({{ item.lapse }})
                 </v-list-tile-title>
                 <v-list-tile-sub-title>
-                  {{ item.hours }}  
+                  {{ item.income.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) }}  
                 </v-list-tile-sub-title>
               </v-list-tile-content>
           </v-list-tile>
@@ -57,13 +57,14 @@ export default {
     return {
       workdays: null,
       workdayItems: [],
-      hourlyIncome: 8.85
+      hourlyIncome: 0,
+      dialogStart: false
     }
   },
   mounted () {
     this.workdays = new WorkDays(this.$localStorage)
     this.workdayItems = this.workdays.getAll()
-    this.hourlyIncome = this.workdays.income('1:00')
+    this.hourlyIncome = this.workdays.getHourlyIncome()
   },
   methods: {
     createItem () {
@@ -71,14 +72,20 @@ export default {
     },
     viewItem () {
       this.$router.push('view')
+    },
+    lapse (item) {
+      return this.workdays.lapse(item)
+    },
+    income (item) {
+      return this.workdays.income(item)
     }
   },
   computed: {
     totalHours () {
-      return this.workdays ? this.workdays.totalHours() : 0
+      return this.workdays ? this.workdays.totalHours(this.workdayItems) : 0
     },
     totalIncome () {
-      return this.workdays ? this.workdays.totalIncome() : 0
+      return this.workdays ? this.workdays.totalIncome(this.workdayItems) : 0
     },
     itemsCount () {
       return this.workdays ? this.workdayItems.length : 0

@@ -45,6 +45,7 @@
 
 <script>
   import { WorkDays } from '../api'
+  import moment from 'moment'
 
   export default {
     props: ['id'],
@@ -55,8 +56,8 @@
         dialogEnd: false,
         item: {
           date: new Date(),
-          start: new Date().getHours() + ':' + new Date().getMinutes(),
-          end: (new Date().getHours() + 1) + ':' + new Date().getMinutes()
+          start: moment().format('HH:mm a'),
+          end: moment().format('HH:mm a')
         }
       }
     },
@@ -67,8 +68,8 @@
         this.item = {
           id: this.id,
           date: item.date,
-          start: item.start,
-          end: item.end
+          start: moment(item.start).format('HH:mm a'),
+          end: moment(item.end).format('HH:mm a')
         }
       }
     },
