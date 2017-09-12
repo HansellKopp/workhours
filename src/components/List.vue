@@ -3,17 +3,14 @@
     <v-flex xs12 sm8 offset-sm2>
       <v-card>
         <v-card-title class="blue accent-2">
-          <v-layout row>
             <v-select
-              :items="availableFilters"
-              dark prepend-icon="date_range"
-              v-model="settings.currentFilter" 
-              @change="changeFilter"
               label="Month Active"
+              :items="availableFilters"
+              v-model="settings.currentFilter" 
+              dark prepend-icon="date_range"
+              @change="changeFilter"
             >
-              {{ settings.currentFilter }}
-            </v-select>   
-          </v-layout>       
+            </v-select>        
           <v-spacer></v-spacer>
           <v-btn
             fab
@@ -30,11 +27,11 @@
           <template v-for="item in workdayItems" >
             <v-list-tile 
               avatar 
-              v-bind:key="item.id"
+              :key="item.id"
               :to="{ name: 'View', params: { id: item.id } }"
               >
               <v-list-tile-avatar>
-                <v-chip class="green white--text">{{ item.date | moment("DD") }}</v-chip>
+                <v-chip class="green white--text">{{ item.start | moment("DD") }}</v-chip>
               </v-list-tile-avatar>
               <v-list-tile-content>
                 <v-list-tile-title> 

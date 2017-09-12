@@ -1,8 +1,8 @@
 <template>
   <v-app id="Work" toolbar fixed-footer>
-    <v-toolbar class="indigo" dark fixed>   
-      <v-toolbar-title @click.stop="loadList()">
-        <v-icon dark>home</v-icon>
+    <v-toolbar class="indigo" dark fixed>
+      <v-btn icon @click.stop="loadList()"><v-icon dark>home</v-icon></v-btn> 
+      <v-toolbar-title @click.stop="loadList()" style="{cursor: hand}">
         Work days
       </v-toolbar-title>
       <v-spacer></v-spacer>

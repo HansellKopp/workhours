@@ -1,5 +1,6 @@
 const uuidV4 = require('uuid/v4')
 const moment = require('moment')
+const _ = require('lodash')
 const SETTINGS = 'settings'
 const WORK_DAYS_ITEMS = 'workdayItems'
 
@@ -10,7 +11,7 @@ export class WorkDays {
       this.storage.set(SETTINGS, JSON.stringify(
         {
           hourlyIncome: 8.84,
-          currentFilter: moment().format('MM YYYY')
+          currentFilter: moment().format('MMMM YYYY')
         }
       ))
     }
@@ -23,13 +24,15 @@ export class WorkDays {
       return JSON.parse(this.storage.get(WORK_DAYS_ITEMS))
     }
     const currentFilter = this.getSettings().currentFilter
-    const items = JSON.parse(this.storage.get(WORK_DAYS_ITEMS))
-    return items.filter(s => (moment(s.start).format('MM YYYY') === currentFilter))
+    const items = JSON.parse(this.storage.get(WORK_DAYS_ITEMS)).filter(s =>
+      (moment(s.start).format('MMMM YYYY') === currentFilter)
+    )
+    return _.sortBy(items, 'start')
   }
   getAvailableFilters () {
     const list = this.getAll()
-    const filters = [...new Set(list.map(item => moment(item.start).format('MM YYYY')))]
-    return filters.sort()
+    const filters = [...new Set(list.map(item => moment(item.start).format('MMMM YYYY')))]
+    return filters
   }
   getSettings () {
     return JSON.parse(this.storage.get(SETTINGS))
