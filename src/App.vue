@@ -7,7 +7,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn class="primary body-2" flat @click.stop="showDialog = !showDialog">
-        Income :{{ hourlyIncome.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) }}
+        Income :{{ settings.hourlyIncome.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) }}
       </v-btn> 
     </v-toolbar>
     <main>
@@ -28,7 +28,7 @@
         <v-card-text>
           <v-text-field
               label="Income"
-              v-model="hourlyIncome"
+              v-model="settings.hourlyIncome"
               type="number"
               class="input-group--focused"
           ></v-text-field>
@@ -51,13 +51,13 @@ import { WorkDays } from './api'
 export default {
   data () {
     return {
-      hourlyIncome: 0,
+      settings: {hourlyIncome: 0, currentFilter: ''},
       showDialog: false
     }
   },
   mounted () {
     this.workdays = new WorkDays(this.$localStorage)
-    this.hourlyIncome = this.workdays.getHourlyIncome()
+    this.settings = this.workdays.getSettings()
   },
   methods: {
     loadList () {
@@ -65,10 +65,10 @@ export default {
     },
     saveIncome () {
       this.showDialog = !this.showDialog
-      this.workdays.setHourlyIncome(this.hourlyIncome)
+      this.workdays.setHourlyIncome(this.settings.hourlyIncome)
     },
     cancel () {
-      this.hourlyIncome = this.workdays.getHourlyIncome()
+      this.settings = this.workdays.getSettings()
       this.showDialog = !this.showDialog
     }
   }

@@ -3,7 +3,7 @@
     <v-flex xs12 sm8 offset-sm2>
       <v-card>
         <v-card-title class="blue accent-2">
-          <div class="white--text headline">September 2017</div>
+          <v-select :items="availableFilters" dark prepend-icon="date_range" v-model="settings.currentFilter" @change="changeFilter">{{ settings.currentFilter }}</v-select>          
           <v-spacer></v-spacer>
           <v-btn
             fab
@@ -55,29 +55,30 @@ import { WorkDays } from '../api'
 export default {
   data () {
     return {
+      selected: '',
       workdays: null,
       workdayItems: [],
-      hourlyIncome: 0,
-      dialogStart: false
+      dialogStart: false,
+      settings: {hourlyIncome: 0, currentFilter: ''},
+      availableFilters: []
     }
   },
   mounted () {
     this.workdays = new WorkDays(this.$localStorage)
-    this.workdayItems = this.workdays.getAll()
-    this.hourlyIncome = this.workdays.getHourlyIncome()
+    this.settings = this.workdays.getSettings()
+    this.workdayItems = this.workdays.getAll(this.settings.currentFilter)
+    this.availableFilters = this.workdays.getAvailableFilters()
   },
   methods: {
+    changeFilter (e) {
+      this.workdays.setCurrentFilter(e)
+      this.workdayItems = this.workdays.getAll(e)
+    },
     createItem () {
       this.$router.push('new')
     },
     viewItem () {
       this.$router.push('view')
-    },
-    lapse (item) {
-      return this.workdays.lapse(item)
-    },
-    income (item) {
-      return this.workdays.income(item)
     }
   },
   computed: {
@@ -92,4 +93,5 @@ export default {
     }
   }
 }
+// <div class="white--text headline">{{ settings.currentFilter }}</div>
 </script>
