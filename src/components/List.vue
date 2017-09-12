@@ -3,14 +3,24 @@
     <v-flex xs12 sm8 offset-sm2>
       <v-card>
         <v-card-title class="blue accent-2">
-          <v-select :items="availableFilters" dark prepend-icon="date_range" v-model="settings.currentFilter" @change="changeFilter">{{ settings.currentFilter }}</v-select>          
+          <v-layout row>
+            <v-select
+              :items="availableFilters"
+              dark prepend-icon="date_range"
+              v-model="settings.currentFilter" 
+              @change="changeFilter"
+              label="Month Active"
+            >
+              {{ settings.currentFilter }}
+            </v-select>   
+          </v-layout>       
           <v-spacer></v-spacer>
           <v-btn
             fab
-            small
             relative
             right
-            class="green accent-4"
+            dark
+            class="green"
             @click.native.stop="createItem()"
           >
             <v-icon>add</v-icon>

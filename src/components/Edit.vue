@@ -14,7 +14,7 @@
           <v-icon>save</v-icon>
         </v-btn>
       </v-layout>
-    <v-layout row="" justify-center="" style="position: relative;" >
+    <v-layout row justify-center style="position: relative;" >
       <v-btn primary="" @click.native.stop="dialogStart = true">Start: {{ item.start }}</v-btn>
       <v-btn primary="" @click.native.stop="dialogEnd = true">End: {{ item.end }}</v-btn>
     </v-layout>
