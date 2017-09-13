@@ -1,22 +1,26 @@
 <template>
   <v-container>
-      <v-layout row justify-center style="position: relative;">
-          <v-date-picker v-model="item.date"></v-date-picker>
-          <v-btn
-            fab
-            absolute
-            right
-            class="mt-4"
-            success
-            dark
-            @click.native.stop="saveItem()"
-          >
-          <v-icon>save</v-icon>
-        </v-btn>
-      </v-layout>
+    <v-layout row justify-center style="position: relative;">
+        <v-date-picker v-model="item.date">
+        </v-date-picker>
+    </v-layout>
     <v-layout row justify-center style="position: relative;" >
       <v-btn primary="" @click.native.stop="dialogStart = true">Start: {{ item.start }}</v-btn>
       <v-btn primary="" @click.native.stop="dialogEnd = true">End: {{ item.end }}</v-btn>
+    </v-layout>
+    <v-layout row justify-center style="position: relative;" >
+      <v-btn
+        fab
+        button
+        right
+        success
+        absolute
+        dark
+        small
+        @click.native.stop="saveItem()"
+      > 
+        <v-icon>save</v-icon>
+      </v-btn>
     </v-layout>
     <v-dialog v-model="dialogStart">
       <v-flex row>

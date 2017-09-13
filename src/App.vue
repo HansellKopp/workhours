@@ -6,7 +6,7 @@
         Work days
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn class="primary body-2" flat @click.stop="showDialog = !showDialog">
+      <v-btn outline dark class="primary body-2" flat @click.stop="showDialog = !showDialog">
         Income :{{ settings.hourlyIncome.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) }}
       </v-btn> 
     </v-toolbar>

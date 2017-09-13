@@ -11,18 +11,19 @@
               @change="changeFilter"
             >
             </v-select>        
-          <v-spacer></v-spacer>
+        </v-card-title>
           <v-btn
             fab
-            relative
-            right
-            dark
+            small
             class="green"
-            @click.native.stop="createItem()"
+            top
+            right
+            absolute
+            dark
+            @click.native.stop="createItem"
           >
             <v-icon>add</v-icon>
           </v-btn>
-        </v-card-title>
         <v-list two-line>
           <template v-for="item in workdayItems" >
             <v-list-tile 
@@ -36,9 +37,9 @@
               <v-list-tile-content>
                 <v-list-tile-title> 
                   <span>{{ item.start | moment("HH:mm a") }} - {{ item.end | moment("HH:mm a") }}</span>   
-                  ({{ item.lapse }})
                 </v-list-tile-title>
                 <v-list-tile-sub-title>
+                  <span> ({{ item.lapse }})</span>
                   {{ item.income.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) }}  
                 </v-list-tile-sub-title>
               </v-list-tile-content>
