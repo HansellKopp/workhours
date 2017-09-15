@@ -1,33 +1,37 @@
 <template>
   <v-app id="Work" toolbar fixed-footer>
-    <v-toolbar class="indigo" dark fixed>
-      <v-btn icon @click.stop="loadList()"><v-icon dark>home</v-icon></v-btn> 
+    <v-toolbar class="indigo" dark fixed>      
       <v-toolbar-title @click.stop="loadList()" style="{cursor: hand}">
-        Work days
+        <v-btn icon @click.stop="loadList()"><v-icon dark>home</v-icon></v-btn>
+        {{ $t("message.title") }}                
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn outline dark class="primary body-2" flat @click.stop="showDialog = !showDialog">
-        Income :{{ settings.hourlyIncome.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) }}
+        {{ $t("message.income") }}: {{ $n(settings.hourlyIncome, 'currency')}}
       </v-btn> 
     </v-toolbar>
     <main>
-      <v-container fluid="">
+      <v-container fluid>        
         <router-view></router-view>
       </v-container>
     </main>
     <v-footer class="indigo" fixed absolute text-xs-center>
       <span class="white--text">Made with ♥ in Berlin</span>
+      <v-spacer></v-spacer>
+       <v-btn icon @click="setLocale('es-ES')"><img class="flag flag-es"/></v-btn>
+       <v-btn icon @click="setLocale('en-US')"><img class="flag flag-us"/></v-btn>
+       <v-btn icon @click="setLocale('de-DE')"><img class="flag flag-de"/></v-btn>
     </v-footer>
     <v-dialog v-model="showDialog">
       <v-card>
         <v-card-title primary-title>
-            Set Income
+            {{ $t("message.setincome.title") }}
             <v-spacer></v-spacer>
             <v-btn icon @click="cancel()"><v-icon>close</v-icon></v-btn>
         </v-card-title>
         <v-card-text>
           <v-text-field
-              label="Income"
+              :label="$t('message.setincome.label')"
               v-model="settings.hourlyIncome"
               type="number"
               class="input-group--focused"
@@ -37,7 +41,7 @@
           <v-spacer></v-spacer>
           <v-btn success @click="saveIncome()">
             <v-icon left dark>save</v-icon>
-            Save
+            {{ $t("message.buttons.save") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -58,6 +62,9 @@ export default {
   mounted () {
     this.workdays = new WorkDays(this.$localStorage)
     this.settings = this.workdays.getSettings()
+    if (this.settings.locale) {
+      this._i18n.locale = this.settings.locale
+    }
   },
   methods: {
     loadList () {
@@ -70,6 +77,10 @@ export default {
     cancel () {
       this.settings = this.workdays.getSettings()
       this.showDialog = !this.showDialog
+    },
+    setLocale (lang) {
+      this._i18n.locale = lang
+      this.workdays.setLocale(lang)
     }
   }
 }

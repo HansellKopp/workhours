@@ -1,25 +1,25 @@
 <template>
     <v-card>
         <v-card-title primary-title>
-            <div>{{ item.date | moment("dddd, MMMM Do YYYY") }}</div>
+            <div>{{ $d(item.date, 'long') }}</div>
         </v-card-title>
         <v-card-text>
-            <p>Start: {{ item.start | moment("HH:mm a") }}</p>
-            <p>End: {{ item.end |  moment("HH:mm a") }}</p>
+            <p>{{ $t("message.start") }}: {{ item.start | moment("HH:mm a") }}</p>
+            <p>{{ $t("message.end") }}: {{ item.end | moment("HH:mm a") }}</p>
             <v-divider></v-divider>
-            <p>Hours: {{ item.lapse }}</p>
+            <p>{{ $t("message.hours") }}: {{ item.lapse }}</p>
             <v-divider></v-divider>
-            <p>Income: {{ item.income.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) }}</p>
+            <p>{{ $t("message.income") }}: {{ $n(item.income, 'currency') }}</p>
         </v-card-text>
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn success :to="{ name: 'Edit', params: { id: this.id } }">
                 <v-icon left dark>edit</v-icon>
-                Edit
+                {{ $t("message.buttons.edit") }}
             </v-btn>
             <v-btn error @click="deleteItem()">
                 <v-icon left dark>delete</v-icon>
-                Delete
+                {{ $t("message.buttons.delete") }}
             </v-btn>
         </v-card-actions>
     </v-card>

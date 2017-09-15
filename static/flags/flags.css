@@ -1,0 +1,19 @@
+.flag {
+    width: 24px;
+    height: 24px;
+}
+
+.flag.flag-es {    
+    background: url('es.svg') no-repeat top left;
+    background-size: contain;
+}
+
+.flag.flag-us {    
+    background: url('us.svg') no-repeat top left;
+    background-size: contain;
+}
+
+.flag.flag-de {    
+    background: url('de.svg') no-repeat top left;
+    background-size: contain;
+}

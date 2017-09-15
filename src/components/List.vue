@@ -1,10 +1,11 @@
 <template>
  <v-layout row>
-    <v-flex xs12 sm8 offset-sm2>
+    <v-flex xs12 sm8 offset-sm2 mt-4>
       <v-card>
         <v-card-title class="blue accent-2">
             <v-select
-              label="Month Active"
+              :label="$t('message.list.selectmonth')"
+              :no-data-text="$t('message.nodata')"
               :items="availableFilters"
               v-model="settings.currentFilter" 
               dark prepend-icon="date_range"
@@ -40,7 +41,7 @@
                 </v-list-tile-title>
                 <v-list-tile-sub-title>
                   <span> ({{ item.lapse }})</span>
-                  {{ item.income.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) }}  
+                   {{ $n(item.income, 'currency') }}
                 </v-list-tile-sub-title>
               </v-list-tile-content>
           </v-list-tile>
@@ -49,7 +50,7 @@
         <v-card-actions  class="blue accent-2 white--text">
           <v-spacer></v-spacer>
           <span class="white--text text-xs-right body-2">
-            Total :{{ totalIncome.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) }}
+            {{ $t('message.total') }}: {{ $n(totalIncome, 'currency')}}            
           </span>
         </v-card-actions>
       </v-card>
@@ -76,6 +77,9 @@ export default {
     this.settings = this.workdays.getSettings()
     this.workdayItems = this.workdays.getAll(this.settings.currentFilter)
     this.availableFilters = this.workdays.getAvailableFilters()
+    if (this.settings.locale) {
+      this._i18n.locale = this.settings.locale
+    }
   },
   methods: {
     changeFilter (e) {
@@ -101,5 +105,4 @@ export default {
     }
   }
 }
-// <div class="white--text headline">{{ settings.currentFilter }}</div>
 </script>

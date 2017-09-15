@@ -5,6 +5,7 @@ import Vuetify from 'vuetify'
 import App from './App'
 import router from './router'
 import moment from 'vue-moment'
+import i18n from './i18n'
 import VueLocalStorage from 'vue-localstorage'
 
 Vue.use(Vuetify)
@@ -16,6 +17,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  i18n,
   template: '<App/>',
   components: { App }
 })

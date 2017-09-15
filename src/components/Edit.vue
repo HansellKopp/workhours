@@ -1,12 +1,15 @@
 <template>
   <v-container>
     <v-layout row justify-center style="position: relative;">
-        <v-date-picker v-model="item.date">
+        <v-date-picker
+          v-model="item.date"
+          :locale="$t('message.locale')"
+        >
         </v-date-picker>
     </v-layout>
     <v-layout row justify-center style="position: relative;" >
-      <v-btn primary="" @click.native.stop="dialogStart = true">Start: {{ item.start }}</v-btn>
-      <v-btn primary="" @click.native.stop="dialogEnd = true">End: {{ item.end }}</v-btn>
+      <v-btn primary="" @click.native.stop="dialogStart = true">{{ $t("message.start") }}: {{ item.start | moment("HH:mm a") }}</v-btn>
+      <v-btn primary="" @click.native.stop="dialogEnd = true">{{ $t("message.end") }}: {{ item.end | moment("HH:mm a") }}</v-btn>
     </v-layout>
     <v-layout row justify-center style="position: relative;" >
       <v-btn

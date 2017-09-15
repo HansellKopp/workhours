@@ -37,6 +37,11 @@ export class WorkDays {
   getSettings () {
     return JSON.parse(this.storage.get(SETTINGS))
   }
+  setLocale (locale) {
+    const settings = this.getSettings()
+    settings.locale = locale
+    this.storage.set(SETTINGS, JSON.stringify(settings))
+  }
   setHourlyIncome (hourlyIncome) {
     const settings = this.getSettings()
     settings.hourlyIncome = hourlyIncome
